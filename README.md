@@ -55,6 +55,7 @@ return [
     'cancelUrl' => 'CANCEL_URL'
 ];
 ```
+* If there is a problem in your Laravel project, the config `config/larapal.php` may not work. At this situation you can try by entering API Credentials at `YourProject/vendor/obydul/larapal/config/config.php`.
 
 <a name="usage"></a>
 ## Usage
@@ -111,10 +112,21 @@ doRefund($transactionId, 'invoice1', true, 12.25, 'USD', '') // you can pass not
 <a name="example"></a>
 ## Example
 
-After configuring LaraPal, define a route and create a controller named 'PayPalController':
+After installing LaraPal, configure the config file `config/larapal.php` and add returnUrl & cancelUrl like:
+```php
+'returnUrl' => 'http://example.com/paypal?action=success',
+'cancelUrl' => 'http://example.com/paypal?action=cancel'
+```
+ 
+Now create a route and create a controller named 'PayPalController':
 
 ```php
+// Route
 Route::get('paypal', 'PayPalController@index');
+
+// Controller
+php artisan make:controller PayPalController
+
 ```
 
 Now in your PayPalController add this:
@@ -146,6 +158,7 @@ class PayPalController extends Controller
 
                 case "success": // Paypal says everything's fine, do the charge (user redirected to $gateway->returnUrl)
                     if ($transaction = $paypal->doPayment($_GET['token'], $_GET['PayerID'])) {
+                        // in the $transaction array there are many information. You can var_dump($transaction) and display message as you want. You can also store data to database from here.
                         echo "Success! Transaction ID: " . $transaction['TRANSACTIONID'];
                     } else {
                         echo "Debugging what went wrong: ";
@@ -156,6 +169,7 @@ class PayPalController extends Controller
                     // inter your transaction ID
                     $transactionId = '9TR987531T2702301';
                     if ($refund = $paypal->doRefund($transactionId, 'invoice9', false, 0, 'USD', '')) {
+                        // like $transaction array there are many information in $refund array.
                         echo 'Refunded: ' . $refund['GROSSREFUNDAMT'];
                     } else {
                         echo "Debugging what went wrong: ";
@@ -180,6 +194,8 @@ Now just visit the URL to make a transaction:
 ```php
 http://example.com/paypal?action=pay
 ```
+
+After successful payment, you will be redirected to returnUrl: `http://example.com/paypal?action=success` and see a message like: `Success! Transaction ID: 9TR987531T2702301`.
 
 ## License
 
