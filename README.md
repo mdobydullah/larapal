@@ -72,11 +72,118 @@ $paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD');
 $paypal->doPayment($_GET['token'], $_GET['PayerID'];
 
 // Perform refund based on transaction ID
-$paypal->doRefund($transactionId, 'invoice1', false, 0, 'USD', '')
-
+$paypal->doRefund($transactionId, 'invoice1', false, 0, 'USD', '');
 ```
 
-<a name="support"></a>
-## Support
+#### doExpressCheckout
+```php
+// Structure
+doExpressCheckout(AMOUNT, 'NOTE', 'INVOICE', 'CURRENCY', SHIPPING, CUSTOMFIELDS); // invoice ID must be unique
+
+// Normal call
+doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD');
+
+// Pass custom fields to your order
+$customFields = array(
+    'sideID' => "1",
+    'sideName' => "EF",
+    'customerEmail' => "email@customer.com",
+);
+
+// Now do the express checkout
+$paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD', false, $customFields);
+```
+
+#### doRefund
+```php
+// Structure
+doExpressCheckout(TRANSACTION_ID, 'INVOICE_ID', 'IS_PARTIAL', PARTIAL_AMOUNT, CURRENCY, NOTE);
+
+// Full refund
+doRefund($transactionId, 'invoice1', false, 0, 'USD', '')
+
+// Partial refund
+doRefund($transactionId, 'invoice1', true, 12.25, 'USD', '') // you can pass note also
+```
+
+<a name="example"></a>
+## Example
+
+After configuring LaraPal, define a route and create a controller named 'PayPalController':
+
+```php
+Route::get('paypal', 'PayPalController@index');
+```
+
+Now in your PayPalController add this:
+
+```php
+namespace App\Http\Controllers;
+
+use Obydul\LaraPal\Services\ExpressCheckout;
+
+class PayPalController extends Controller
+{
+
+    /**
+     * payment process
+     */
+    public function index()
+    {
+        // If you face this type of message "Cannot modify header information", then add this: ob_start();
+
+        $paypal = new ExpressCheckout();
+
+        if (isset($_GET['action'])) {
+            $action = $_GET['action'];
+
+            switch ($action) {
+                case "pay": // Index page, here you should be redirected to Paypal
+                    $paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD');
+                    break;
+
+                case "success": // Paypal says everything's fine, do the charge (user redirected to $gateway->returnUrl)
+                    if ($transaction = $paypal->doPayment($_GET['token'], $_GET['PayerID'])) {
+                        echo "Success! Transaction ID: " . $transaction['TRANSACTIONID'];
+                    } else {
+                        echo "Debugging what went wrong: ";
+                    }
+                    break;
+
+                case "refund":
+                    // inter your transaction ID
+                    $transactionId = '9TR987531T2702301';
+                    if ($refund = $paypal->doRefund($transactionId, 'invoice9', false, 0, 'USD', '')) {
+                        echo 'Refunded: ' . $refund['GROSSREFUNDAMT'];
+                    } else {
+                        echo "Debugging what went wrong: ";
+                    }
+                    break;
+
+                case "cancel": // User canceled and returned to your store (to $gateway->cancelUrl)
+                    echo "User canceled";
+                    break;
+            }
+        } else {
+            echo "Please pass an action. Actions: pay, success or refund";
+        }
+
+    }
+
+}
+```
+
+Now just visit the URL to make a transaction:
+
+```php
+http://example.com/paypal?action=pay
+```
+
+<a name=""></a>
+## Others
+Inspired by [paypal-express-checkout](https://github.com/romaonthego/paypal-express-checkout) and thank you, [romaonthego](https://github.com/romaonthego).
 
 In case of any issues, kindly create one on the [Issues](https://github.com/mdobydullah/larapal/issues) section.
+
+
+Thank you for installing LaraPal.
