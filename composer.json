@@ -1,0 +1,26 @@
+{
+  "name": "obydul/larapal",
+  "description": "LaraPal is a laravel plugin for processing payments through PayPal.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Md. Obydullah",
+      "email": "obydul@makpie.com"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Obydul\\LaraPal\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Obydul\\LaraPal\\LaraPalServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev"
+}
