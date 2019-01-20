@@ -1,4 +1,9 @@
 <?php
+/**
+ * PayPal ExpressCheckout Class
+ * Author: Md. Obydullah <obydul@makpie.com>.
+ * Author URL: https://obydul.me
+ */
 
 namespace Obydul\Larapal\Services;
 
@@ -22,7 +27,7 @@ class ExpressCheckout extends PaypalBase
      *
      * @return bool
      */
-    public function doExpressCheckout($amount, $description, $invoice = '', $currency = 'USD', $shipping = false)
+    public function doExpressCheckout($amount, $description, $invoice = '', $currency = 'USD', $shipping = false, &$customFields = array())
     {
         $resultData = Array();
 
@@ -50,10 +55,15 @@ class ExpressCheckout extends PaypalBase
             $data['PAYMENTREQUEST_0_SHIPTOPHONENUM'] = $shipping['phone_number'];
         }
 
-        $siteID = "ElectronicFirst";
-        $customerEmail = "customer@test.com";
+        $data['CUSTOM'] = $amount . '|' . $currency . '|' . $invoice;
 
-        $data['CUSTOM'] = $amount . '|' . $currency . '|' . $invoice . '|' . $siteID . '|' . $customerEmail;
+        // add custom fields
+        if (!empty($customFields)) {
+            foreach ($customFields as $customField) {
+                $data['CUSTOM'] .= '|' . $customField;
+            }
+        }
+
         if ($invoice) $data['INVNUM'] = $invoice;
 
         if (!$resultData = $this->runQueryWithParams($data)) return false;
