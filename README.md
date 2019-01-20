@@ -1,4 +1,6 @@
 # LaraPal
+[![License](https://poser.pugx.org/obydul/larapal/license)](https://packagist.org/packages/obydul/larapal)
+[![Latest Unstable Version](https://poser.pugx.org/obydul/larapal/v/unstable)](https://packagist.org/packages/obydul/larapal)
 
 <a name="introduction"></a>
 ## Introduction
@@ -178,6 +180,11 @@ Now just visit the URL to make a transaction:
 ```php
 http://example.com/paypal?action=pay
 ```
+
+## License
+
+The MIT License (MIT). Please see [License File](https://github.com/mdobydullah/larapal/blob/master/LICENSE) for more information.
+
 
 <a name=""></a>
 ## Others
