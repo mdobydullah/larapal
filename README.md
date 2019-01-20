@@ -158,7 +158,7 @@ class PayPalController extends Controller
 
                 case "success": // Paypal says everything's fine, do the charge (user redirected to $gateway->returnUrl)
                     if ($transaction = $paypal->doPayment($_GET['token'], $_GET['PayerID'])) {
-                        // in the $transaction array there are many information. You can var_dump($transaction) and display message as you want. You can also store data to database from here.
+                        // In the $transaction array there are many information. You can var_dump($transaction) and display message as you want. You can also store data to database from here.
                         echo "Success! Transaction ID: " . $transaction['TRANSACTIONID'];
                     } else {
                         echo "Debugging what went wrong: ";
@@ -166,10 +166,10 @@ class PayPalController extends Controller
                     break;
 
                 case "refund":
-                    // inter your transaction ID
+                    // Enter your transaction ID
                     $transactionId = '9TR987531T2702301';
                     if ($refund = $paypal->doRefund($transactionId, 'invoice9', false, 0, 'USD', '')) {
-                        // like $transaction array there are many information in $refund array.
+                        // Like $transaction array there are many information in $refund array.
                         echo 'Refunded: ' . $refund['GROSSREFUNDAMT'];
                     } else {
                         echo "Debugging what went wrong: ";
