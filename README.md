@@ -69,22 +69,26 @@ use Obydul\LaraPal\Services\ExpressCheckout;
 $paypal = new ExpressCheckout();  // Create object instance.
 
 // Redirect user to PayPal to obtain charging permissions
-$paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD');
+$paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice_id', 'USD'); // single payment
+$paypal->doExpressMultipleCheckout($items, 'invoice_id', 'USD', false, $customFields); // multiple items
 
 // Perform payment, token and PayerID are being returned with GET response from PayPal
-$paypal->doPayment($_GET['token'], $_GET['PayerID'];
+$paypal->doSinglePayment($_GET['token'], $_GET['PayerID']; // single payment
+$paypal->doMultiplePayment($_GET['token'], $_GET['PayerID']; // multiple payment
 
 // Perform refund based on transaction ID
-$paypal->doRefund($transactionId, 'invoice1', false, 0, 'USD', '');
+$paypal->doRefund($transactionId, 'invoice_id', false, 0, 'USD', ''); // full refund
+$paypal->doRefund($transactionId, 'invoice_id', true, 5.15, 'USD', ''); // partial refund
 ```
 
 #### doExpressCheckout
 ```php
 // Structure
-doExpressCheckout(AMOUNT, 'NOTE', 'INVOICE', 'CURRENCY', SHIPPING, CUSTOMFIELDS); // invoice ID must be unique
+doExpressCheckout(AMOUNT, 'DESCRIPTION', 'INVOICE', 'CURRENCY', SHIPPING, CUSTOMFIELDS); // invoice ID must be unique
+doExpressMultipleCheckout(ITEMS, 'INVOICE', 'CURRENCY', SHIPPING, CUSTOMFIELDS); // invoice ID must be unique
 
 // Normal call
-doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD');
+doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice_id', 'USD');
 
 // Pass custom fields to your order
 $customFields = array(
@@ -93,7 +97,26 @@ $customFields = array(
 );
 
 // Now do the express checkout
-$paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD', false, $customFields);
+$paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice_id', 'USD', false, $customFields); // if you don't like to pass custom fields, then remove $customFields from here.
+
+// multiple payment
+$items = array(
+    array(
+        "name" => "Product 1",
+        "price" => "12.25",
+        "quantity" => "1",
+        "product_id" => 111
+    ),
+    array(
+        "name" => "Product 2",
+        "price" => "25.50",
+        "quantity" => "1",
+        "product_id" => 112
+    )
+);
+
+$paypal->doExpressMultipleCheckout($items, $invoice_id, 'USD', false, $customFields);
+
 ```
 
 #### doRefund
@@ -102,10 +125,10 @@ $paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD', f
 doExpressCheckout(TRANSACTION_ID, 'INVOICE_ID', 'IS_PARTIAL', PARTIAL_AMOUNT, CURRENCY, NOTE);
 
 // Full refund
-doRefund($transactionId, 'invoice1', false, 0, 'USD', '')
+doRefund($transactionId, 'invoice_id', false, 0, 'USD', '')
 
 // Partial refund
-doRefund($transactionId, 'invoice1', true, 12.25, 'USD', '') // you can pass note also
+doRefund($transactionId, 'invoice_id', true, 12.25, 'USD', '') // you can pass note also
 ```
 
 <a name="example"></a>
@@ -113,85 +136,32 @@ doRefund($transactionId, 'invoice1', true, 12.25, 'USD', '') // you can pass not
 
 After installing LaraPal, configure the config file `config/larapal.php` and add returnUrl & cancelUrl like:
 ```php
-'returnUrl' => 'http://example.com/paypal?action=success',
-'cancelUrl' => 'http://example.com/paypal?action=cancel'
+'returnUrl' => 'http://example.com/do-the-payment',
+'cancelUrl' => 'http://example.com/cancel-payment'
 ```
  
-Now create a route and create a controller named 'PayPalController':
+Now create routes and create a controller named 'PayPalController':
 
 ```php
-// Route
-Route::get('paypal', 'PayPalController@index');
+// Routes
+Route::get('payment-status', 'PayPalController@paymentStatus')->name('payment-status');
+Route::get('single-payment', 'PayPalController@singlePayment');
+Route::get('multiple-payment', 'PayPalController@multipleItemsPayment');
+Route::get('do-the-payment', 'PayPalController@doThePayment');
+Route::get('refund-payment', 'PayPalController@doRefund');
+Route::get('cancel-payment', 'PayPalController@cancelPayment');
 
 // Controller
 php artisan make:controller PayPalController
-
 ```
+Now in your PayPalController add this: [PayPalController.php](https://gist.github.com/mdobydullah/44f52dbb1cf9f954d66a15b93c95640d)
 
-Now in your PayPalController add this:
+Now just visit the URL to make an action:
 
 ```php
-namespace App\Http\Controllers;
-
-use Obydul\LaraPal\Services\ExpressCheckout;
-
-class PayPalController extends Controller
-{
-
-    /**
-     * payment process
-     */
-    public function index()
-    {
-        // If you face this type of message "Cannot modify header information", then add this: ob_start();
-
-        $paypal = new ExpressCheckout();
-
-        if (isset($_GET['action'])) {
-            $action = $_GET['action'];
-
-            switch ($action) {
-                case "pay": // Index page, here you should be redirected to Paypal
-                    $paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD');
-                    break;
-
-                case "success": // Paypal says everything's fine, do the charge (user redirected to $gateway->returnUrl)
-                    if ($transaction = $paypal->doPayment($_GET['token'], $_GET['PayerID'])) {
-                        // In the $transaction array there are many information. You can var_dump($transaction) and display message as you want. You can also store data to database from here.
-                        echo "Success! Transaction ID: " . $transaction['TRANSACTIONID'];
-                    } else {
-                        echo "Debugging what went wrong: ";
-                    }
-                    break;
-
-                case "refund":
-                    // Enter your transaction ID
-                    $transactionId = '9TR987531T2702301';
-                    if ($refund = $paypal->doRefund($transactionId, 'invoice9', false, 0, 'USD', '')) {
-                        // Like $transaction array there are many information in $refund array.
-                        echo 'Refunded: ' . $refund['GROSSREFUNDAMT'];
-                    } else {
-                        echo "Debugging what went wrong: ";
-                    }
-                    break;
-
-                case "cancel": // User canceled and returned to your store (to $gateway->cancelUrl)
-                    echo "User canceled";
-                    break;
-            }
-        } else {
-            echo "Please pass an action. Actions: pay, success or refund";
-        }
-
-    }
-
-}
-```
-
-Now just visit the URL to make a transaction:
-
-```php
-http://example.com/paypal?action=pay
+http://example.com/single-payment
+http://example.com/multiple-payment
+http://example.com/refund-payment
 ```
 
 After successful payment, you will be redirected to returnUrl: `http://example.com/paypal?action=success` and see a message like: `Success! Transaction ID: 9TR987531T2702301`.

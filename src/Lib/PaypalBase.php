@@ -8,8 +8,8 @@ use Obydul\LaraPal\Lib\PaypalGateway;
 class PaypalBase
 {
 
-    protected $gateway;
-    protected $endpoint = '/nvp';
+    public $gateway;
+    public $endpoint = '/nvp';
 
     public function __construct()
     {
