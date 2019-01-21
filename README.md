@@ -88,9 +88,8 @@ doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice1', 'USD');
 
 // Pass custom fields to your order
 $customFields = array(
-    'sideID' => "1",
-    'sideName' => "EF",
-    'customerEmail' => "email@customer.com",
+    'identifier' => "Example.com/ID",
+    'customerEmail' => "customer@email.com",
 );
 
 // Now do the express checkout
