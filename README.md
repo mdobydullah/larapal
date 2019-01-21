@@ -96,8 +96,8 @@ $customFields = array(
     'customerEmail' => "customer@email.com",
 );
 
-// Now do the express checkout
-$paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice_id', 'USD', false, $customFields); // if you don't like to pass custom fields, then remove $customFields from here.
+// Now do the express checkout. If you don't like to pass custom fields, then remove $customFields.
+$paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice_id', 'USD', false, $customFields);
 
 // multiple payment
 $items = array(
@@ -164,7 +164,7 @@ http://example.com/multiple-payment
 http://example.com/refund-payment
 ```
 
-After successful payment, you will be redirected to returnUrl: `http://example.com/paypal?action=success` and see a message like: `Success! Transaction ID: 9TR987531T2702301`.
+After successful payment, you will be redirected to returnUrl: `http://example.com/payment-status` and will see a message like: `Success! Transaction ID: 9TR987531T2702301`.
 
 ## License
 
