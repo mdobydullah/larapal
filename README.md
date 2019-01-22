@@ -66,7 +66,8 @@ Following are some ways through which you can access the paypal provider:
 // Import the class namespaces first, before using it directly
 use Obydul\LaraPal\Services\ExpressCheckout;
 
-$paypal = new ExpressCheckout();  // Create object instance.
+// Create object instance
+$paypal = new ExpressCheckout();
 
 // Redirect user to PayPal to obtain charging permissions
 $paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice_id', 'USD'); // single payment
@@ -79,6 +80,9 @@ $paypal->doMultiplePayment($_GET['token'], $_GET['PayerID']; // multiple payment
 // Perform refund based on transaction ID
 $paypal->doRefund($transactionId, 'invoice_id', false, 0, 'USD', ''); // full refund
 $paypal->doRefund($transactionId, 'invoice_id', true, 5.15, 'USD', ''); // partial refund
+
+// Get transaction details 
+$details = $paypal->getTransactionDetails($transactionId);
 ```
 
 #### doExpressCheckout
@@ -99,7 +103,7 @@ $customFields = array(
 // Now do the express checkout. If you don't like to pass custom fields, then remove $customFields.
 $paypal->doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice_id', 'USD', false, $customFields);
 
-// multiple payment
+// multiple items payment
 $items = array(
     array(
         "name" => "Product 1",
