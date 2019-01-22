@@ -83,9 +83,9 @@ $paypal->doRefund($transactionId, 'invoice_id', true, 5.15, 'USD', ''); // parti
 
 #### doExpressCheckout
 ```php
-// Structure
-doExpressCheckout(AMOUNT, 'DESCRIPTION', 'INVOICE', 'CURRENCY', SHIPPING, CUSTOMFIELDS); // invoice ID must be unique
-doExpressMultipleCheckout(ITEMS, 'INVOICE', 'CURRENCY', SHIPPING, CUSTOMFIELDS); // invoice ID must be unique
+// Structure - invoice ID must be unique
+doExpressCheckout(AMOUNT, 'DESCRIPTION', 'INVOICE', 'CURRENCY', SHIPPING, CUSTOMFIELDS);
+doExpressMultipleCheckout(ITEMS, 'INVOICE', 'CURRENCY', SHIPPING, CUSTOMFIELDS);
 
 // Normal call
 doExpressCheckout(123.45, 'LaraPal Test Checkout', 'invoice_id', 'USD');
