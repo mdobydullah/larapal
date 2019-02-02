@@ -87,7 +87,7 @@ class ExpressCheckout extends PaypalBase
             $data["L_PAYMENTREQUEST_0_AMT$key"] = $item['price'];
             $data["L_PAYMENTREQUEST_0_QTY$key"] = $item['quantity'];
 
-            $totalPrice = $totalPrice + $item['price'];
+            $totalPrice = $totalPrice + ($item['price'] * $item['quantity']);
         }
 
         $data['PAYMENTREQUEST_0_PAYMENTACTION'] = 'Sale';
