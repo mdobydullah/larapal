@@ -55,7 +55,8 @@ return [
     'cancelUrl' => 'CANCEL_URL'
 ];
 ```
-* If there is a problem in your Laravel project, the config `config/larapal.php` may not work. At this situation you can try by entering API Credentials at `YourProject/vendor/obydul/larapal/config/config.php`.
+* Now clear config cache: `php artisan config:cache`. You can also clear cache: `php artisan cache:clear`.
+* Still if there is a problem in your Laravel project, the config `config/larapal.php` may not work. At this situation you can try by entering API Credentials at `YourProject/vendor/obydul/larapal/config/config.php`.
 
 <a name="usage"></a>
 ## Usage
