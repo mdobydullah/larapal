@@ -1,6 +1,5 @@
 # LaraPal
 [![Latest Stable Version](https://poser.pugx.org/obydul/larapal/v/stable)](https://packagist.org/packages/obydul/larapal)
-[![Total Downloads](https://poser.pugx.org/obydul/larapal/downloads)](https://packagist.org/packages/obydul/larapal)
 [![Latest Unstable Version](https://poser.pugx.org/obydul/larapal/v/unstable)](https://packagist.org/packages/obydul/larapal)
 [![License](https://poser.pugx.org/obydul/larapal/license)](https://packagist.org/packages/obydul/larapal)
 
