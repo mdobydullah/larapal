@@ -4,13 +4,10 @@ namespace Obydul\LaraPal\Lib;
 
 class PaypalGateway
 {
-
     public $apiUsername;
     public $apiPassword;
     public $apiSignature;
     public $testMode;
-    public $returnUrl;
-    public $cancelUrl;
 
     public function __construct($apiUsername = "", $apiPassword = "", $apiSignature = "", $testMode = false)
     {
@@ -29,5 +26,4 @@ class PaypalGateway
     {
         return $this->testMode ? "https://www.sandbox.paypal.com/cgi-bin/webscr?" : "https://www.paypal.com/cgi-bin/webscr?";
     }
-
 }

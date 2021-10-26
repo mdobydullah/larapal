@@ -6,10 +6,8 @@
  */
 
 return [
-    'mode' => 'sandbox', // sandbox or live
-    'api_username' => 'PAYPAL_API_USERNAME',
-    'api_password' => 'PAYPAL_API_PASSWORD',
-    'api_signature' => 'PAYPAL_API_SIGNATURE',
-    'returnUrl' => 'RETURN_URL',
-    'cancelUrl' => 'CANCEL_URL'
+    'mode' => env('LARAPAL_MODE', 'sandbox'), // sandbox or live
+    'api_username' => env('LARAPAL_API_USERNAME'), // paypal api username
+    'api_password' => env('LARAPAL_API_PASSWORD'), // paypal api password
+    'api_signature' => env('LARAPAL_API_SIGNATURE'), // paypal api signature
 ];

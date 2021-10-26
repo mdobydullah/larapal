@@ -24,7 +24,7 @@ https://developer.paypal.com/docs/classic/api/apiCredentials/#create-an-api-sign
 composer require obydul/larapal
 ```
 
-* Add the service provider to your `$providers` array in `config/app.php` file like: 
+* Laravel 5.5 uses package auto-discovery, so doesn't require you to manually add the ServiceProvider. If you don't use auto-discovery, add the service provider to your `$providers` array in `config/app.php` file like:
 
 ```php
 Obydul\LaraPal\LarapalServiceProvider::class
@@ -33,31 +33,23 @@ Obydul\LaraPal\LarapalServiceProvider::class
 * Run the following command to publish configuration:
 
 ```bash
-php artisan vendor:publish
+php artisan vendor:publish --provider="Obydul\LaraPal\LarapalServiceProvider"
 ```
-*  Then choose 'Obydul\LaraPal\LarapalServiceProvider':
-
-![larapal-publish](https://user-images.githubusercontent.com/13184472/51436553-8c4e9b00-1cb9-11e9-8a03-ff55841ec3df.png)
 
 Installation completed.
 
 <a name="configuration"></a>
 ## Configuration
 
-* After installation, you will need to add your paypal settings. Following is the code you will find in **config/larapal.php**, which you should update accordingly.
+* After installation, you need to set paypal credentialsin **.env** file.
 
-```php
-return [
-    'mode' => 'sandbox', // sandbox or live
-    'api_username' => 'PAYPAL_API_USERNAME',
-    'api_password' => 'PAYPAL_API_PASSWORD',
-    'api_signature' => 'PAYPAL_API_SIGNATURE',
-    'returnUrl' => 'RETURN_URL',
-    'cancelUrl' => 'CANCEL_URL'
-];
+```bash
+LARAPAL_MODE=sandbox # sandbox or live
+LARAPAL_API_USERNAME= # paypal api username
+LARAPAL_API_PASSWORD= # paypal api password
+LARAPAL_API_SIGNATURE= # paypal api signature
 ```
-* Now clear config cache: `php artisan config:cache`. You can also clear cache: `php artisan cache:clear`.
-* Still if there is a problem in your Laravel project, the config `config/larapal.php` may not work. At this situation you can try by entering API Credentials at `YourProject/vendor/obydul/larapal/config/config.php`.
+* Now optimize the app: `php artisan optimize && php artisan config:clear`.
 
 <a name="usage"></a>
 ## Usage
@@ -140,13 +132,7 @@ doRefund($transactionId, 'invoice_id', true, 12.25, 'USD', '') // you can pass n
 <a name="example"></a>
 ## Example
 
-After installing LaraPal, configure the config file `config/larapal.php` and add returnUrl & cancelUrl like:
-```php
-'returnUrl' => 'http://example.com/do-the-payment',
-'cancelUrl' => 'http://example.com/cancel-payment'
-```
- 
-Now create routes and create a controller named 'PayPalController':
+After installing LaraPal, create routes and create a controller named 'PayPalController':
 
 ```php
 // Routes
@@ -170,7 +156,7 @@ http://example.com/multiple-payment
 http://example.com/refund-payment
 ```
 
-After successful payment, you will be redirected to returnUrl: `http://example.com/payment-status` and will see a message like: `Success! Transaction ID: 9TR987531T2702301`.
+After successful payment, you will be redirected to `http://example.com/payment-status` and will see a message like: `Success! Transaction ID: 9TR987531T2702301`.
 
 ## License
 

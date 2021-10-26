@@ -96,11 +96,10 @@ class ExpressCheckout extends PaypalBase
         $data['PAYMENTREQUEST_0_INVNUM'] = $invoice;
         $data['METHOD'] = "SetExpressCheckout";
 
+        // set shipping
         if ($shipping === false) {
             $data['NOSHIPPING'] = "1";
         } else if ($shipping === true) {
-            // let the merchant decide the address
-        } else {
             // address specified by the customer
             $data['ADDROVERRIDE'] = 1;
             $data['PAYMENTREQUEST_0_SHIPTONAME'] = $shipping['name'];
@@ -111,6 +110,12 @@ class ExpressCheckout extends PaypalBase
             $data['PAYMENTREQUEST_0_SHIPTOCOUNTRYCODE'] = $shipping['country_code'];
             $data['PAYMENTREQUEST_0_SHIPTOZIP'] = $shipping['zip'];
             $data['PAYMENTREQUEST_0_SHIPTOPHONENUM'] = $shipping['phone_number'];
+        }
+        else if ($shipping == "customer_address") {
+            // get paypal address
+            $data['ADDROVERRIDE'] = 0;
+        } else {
+            $data['NOSHIPPING'] = "1";
         }
 
         $data['PAYMENTREQUEST_0_CUSTOM'] = $total_items;
@@ -236,10 +241,8 @@ class ExpressCheckout extends PaypalBase
      *
      * @return bool
      */
-    public function doRefund($transactionId, $invoice = '', $isPartial = false,
-                             $amount = 0, $currencyCode = 'USD', $note = '')
+    public function doRefund($transactionId, $invoice = '', $isPartial = false, $amount = 0, $currencyCode = 'USD', $note = '')
     {
-
         $data = array('METHOD' => 'RefundTransaction',
             'TRANSACTIONID' => $transactionId,
             'INVOICEID' => $invoice,
@@ -253,4 +256,18 @@ class ExpressCheckout extends PaypalBase
         return $this->runQueryWithParams($data);
     }
 
+    /**
+     * Get PayPal Balances
+     *
+     * @return array PayPal response
+     */
+    public function getBalances()
+    {
+        $data = [
+            'METHOD' => 'GetBalance',
+            'RETURNALLCURRENCIES' => 1,
+        ];
+
+        return $this->runQueryWithParams($data);
+    }
 }

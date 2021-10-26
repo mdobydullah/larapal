@@ -7,13 +7,11 @@ use Obydul\LaraPal\Lib\PaypalGateway;
 
 class PaypalBase
 {
-
     public $gateway;
     public $endpoint = '/nvp';
 
-    public function __construct()
+    public function __construct($return_url = null, $cancel_url = null)
     {
-
         // configure larapal
         $gateway = new PaypalGateway();
 
@@ -27,9 +25,9 @@ class PaypalBase
         else
             $gateway->testMode = false;
 
-        // Return (success) and cancel url setup
-        $gateway->returnUrl = config('larapal.returnUrl');
-        $gateway->cancelUrl = config('larapal.cancelUrl');
+        // return (ack success) and cancel url
+        $gateway->returnUrl = $return_url;
+        $gateway->cancelUrl = $cancel_url;
 
         $this->gateway = $gateway;
     }

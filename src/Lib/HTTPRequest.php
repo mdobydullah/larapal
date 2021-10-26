@@ -4,10 +4,8 @@ namespace Obydul\LaraPal\Lib;
 
 class HTTPRequest
 {
-
     private $host;
     private $path;
-    private $data;
     private $method;
     private $port;
     private $rawhost;
