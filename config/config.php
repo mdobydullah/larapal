@@ -1,7 +1,7 @@
 <?php
 /**
  * PayPal Setting & API Credentials
- * Author: Md. Obydullah <obydul@makpie.com>.
+ * Author: Md. Obydullah <hi@obydul.me>.
  * Author URL: https://obydul.me
  */
 

@@ -1,11 +1,11 @@
 <?php
 /**
  * PayPal ExpressCheckout Class
- * Author: Md. Obydullah <obydul@makpie.com>.
+ * Author: Md. Obydullah <hi@obydul.me>.
  * Author URL: https://obydul.me
  */
 
-namespace Obydul\Larapal\Services;
+namespace Obydul\LaraPal\Services;
 
 use Obydul\LaraPal\Lib\PaypalBase;
 
