@@ -9,7 +9,9 @@
       "email": "hi@obydul.me"
     }
   ],
-  "require": {},
+  "require": {
+      "laravel/framework": ">=7.0"
+  },
   "autoload": {
     "psr-4": {
       "Obydul\\LaraPal\\": "src/"
