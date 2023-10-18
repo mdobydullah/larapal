@@ -8,12 +8,10 @@ class LaraPalServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-
         // Publish config files
         $this->publishes([
-            __DIR__ . './../config/config.php' => config_path('larapal.php'),
+            __DIR__ . '/../config/config.php' => config_path('larapal.php'),
         ]);
-
     }
 
     public function register()
@@ -22,14 +20,14 @@ class LaraPalServiceProvider extends ServiceProvider
     }
 
     /**
-     * Merges user's and larapal's configs.
+     * Merges user's and Larapal's configs.
      *
      * @return void
      */
     private function mergeConfig()
     {
         $this->mergeConfigFrom(
-            __DIR__ . './../config/config.php',
+            __DIR__ . '/../config/config.php',
             'larapal'
         );
     }
